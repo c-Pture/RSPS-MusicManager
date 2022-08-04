@@ -19,10 +19,6 @@ package main.pegasus.mm;
 
 import java.util.ArrayList;
 
-import com.rs2hd.GameEngine;
-import com.rs2hd.model.Player;
-import com.rs2hd.util.Misc;
-
 import cache.test.loaders.ClientScriptMap;
 
 public class MusicUpdateManager {
@@ -49,7 +45,8 @@ public class MusicUpdateManager {
 			currentRegion = player.getLocation().getRegionId();
 			if(currentRegion != lastRegion) {
 				lastRegion = currentRegion;
-				int musicID = GameEngine.getMusic().getMusicIdForRegion(currentRegion);
+				int musicID = // !-- IMPORTANT --!
+				// Add your way to get the music id it should play, for example random number or by region!
 				
 				if(curMusicID != -1) {
 					lastMusicID = curMusicID;
@@ -69,28 +66,34 @@ public class MusicUpdateManager {
 	}
 	
 	public boolean musicEnded() {
-		return curMusicID != -2 && playingMusicDelay + (180000) < Misc.currentTimeMillis();
+		return curMusicID != -2 && playingMusicDelay + (180000) < Misc.currentTimeMillis();//Misc.currentTimeMillis is just current time in ms + correction
 	}
 	
 	public void playMusic(int musicId) {
-		playingMusicDelay = Misc.currentTimeMillis();
+		playingMusicDelay = Misc.currentTimeMillis();//Misc.currentTimeMillis is just current time in ms + correction
 		if (musicId == -2) {
 			curMusicID = musicId;
-			player.getActionSender().sendMusic(-1);
-			player.getActionSender().sendString("", 187, 14);
+			// !-- IMPORTANT --!
+			// Add your packet to play music right here!
+			// And maybe update the text in the music player according to the current music title playing
 			return;
 		}
-		player.getActionSender().sendMusic(musicId);
+		// !-- IMPORTANT --!
+		// Add your packet to play music right here!
+		
+		// !-- WARNING -- !
+		//The operations below require advanced prep such as cache reading!
 		curMusicID = musicId;
 		int musicIndex = (int) ClientScriptMap.getMap(1351).getKeyForValue(musicId);
 		if (musicIndex != -1) {
 			String musicName = ClientScriptMap.getMap(1345).getStringValue(musicIndex);
-			player.getActionSender().sendString(musicName != null ? musicName : "", 187, 14);
+					// !-- IMPORTANT --!
+					// Send your music title to the music player here
 			if (!unlocked.contains(musicId)) {
 				unlocked.add(musicId);
 				if (musicName != null)
-					player.getActionSender()
-							.sendMessage("<col=ff0000>You have unlocked a new music track: " + musicName + ".");
+					// !-- IMPORTANT --!
+					// Add your unlock message here! -> You have unlocked a new music track: " + musicName + "."
 				refreshMusicListConfig();
 			}
 		}
@@ -110,6 +113,9 @@ public class MusicUpdateManager {
 		playMusic(curMusicID);
 	}
 	
+	// !-- WARNING --!
+	// This sends the configs to the music list, making them turn green (Unlocked)
+	// Requires cache reading, edit and use this if you need it, else disable this and remove the reference refreshMusicListConfig()
 	public void refreshMusicListConfig() {
 		int[] musicConfigs = {20, 21, 22, 23, 24, 25, 298, 311, 346, 414, 464, 598, 662, 721, 906, 1009, 1104, 1136, 1180, 1202};
 		int[] configValues = new int[musicConfigs.length];
