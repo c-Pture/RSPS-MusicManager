@@ -75,7 +75,7 @@ public class MusicUpdateManager {
 			curMusicID = musicId;
 			// !-- IMPORTANT --!
 			// Add your packet to play music right here!
-			// And maybe update the text in the music player according to the current music title playing
+			// And update the title/text in the music player according to the current music title playing
 			return;
 		}
 		// !-- IMPORTANT --!
@@ -107,7 +107,7 @@ public class MusicUpdateManager {
 			curMusicID = unlocked.get(Misc.getRandom(unlocked.size() - 1));
 		
 		/*if(curMusicID == lastMusicID) {
-			replayMusic();//Stack Overflow at low unlock number
+			replayMusic();//TODO: Stack Overflow at low unlock number
 			return;
 		}*/
 		playMusic(curMusicID);
